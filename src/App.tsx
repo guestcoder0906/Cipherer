@@ -290,13 +290,14 @@ export default function App() {
 
               <div className="bg-zinc-900/50 p-6 rounded-2xl border border-zinc-800">
                 <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Letter to Number Map</h3>
-                <div className="grid grid-cols-4 gap-x-4 gap-y-2 text-sm font-mono text-zinc-300">
-                  <div>A = 1</div><div>H = 8</div><div>O = 15</div><div>V = 22</div>
-                  <div>B = 2</div><div>I = 9</div><div>P = 16</div><div>W = 23</div>
-                  <div>C = 3</div><div>J = 10</div><div>Q = 17</div><div>X = 24</div>
-                  <div>D = 4</div><div>K = 11</div><div>R = 18</div><div>Y = 25</div>
-                  <div>E = 5</div><div>L = 12</div><div>S = 19</div><div>Z = 26</div>
-                  <div>F = 6</div><div>M = 13</div><div>T = 20</div><div className="text-amber-500">Gap = Space</div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-x-2 gap-y-2 text-[10px] font-mono text-zinc-300">
+                  {CHAR_MAP.split('').map((char, index) => (
+                    <div key={index} className={`flex items-center gap-1 p-1 rounded ${char === ' ' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-zinc-950/50 border border-zinc-800'}`}>
+                      <span className="w-4 text-center bg-zinc-800 rounded text-zinc-400">{char === ' ' ? '␣' : char}</span>
+                      <span>=</span>
+                      <span className="font-bold">{index}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
