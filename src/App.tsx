@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { Copy, Info, Check, PenTool, BookOpen } from 'lucide-react';
 
 // 10 Diverse Base Shapes (Values 0-9)
-const SHAPES = ['○', '△', '☆', '⟢', '✧', '┌', '┐', '└', '┘', '⊹'];
+const SHAPES = ['◊', '△', '☆', '⟢', '✧', '┌', '┐', '└', '┘', '⊹'];
 const ZWJ = '\u200D';
 
 // Combining Marks (Values 0, 10, 20, 30, 40)
@@ -209,7 +209,7 @@ export default function App() {
               <div className="grid grid-cols-5 gap-2">
                 {[0, 1, 2, 3, 4].map(i => (
                   <div key={i} className="flex flex-col items-center justify-center bg-zinc-950 p-3 rounded-xl border border-zinc-800 hover:border-amber-500/50 transition-colors">
-                    <span className="text-2xl text-cyan-400 font-mono">○{MARKS[i]}</span>
+                    <span className="text-2xl text-cyan-400 font-mono">◊{MARKS[i]}</span>
                     <span className="text-xs text-zinc-500 mt-2 font-mono">+{i * 10}</span>
                   </div>
                 ))}
@@ -251,7 +251,7 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="bg-black/50 p-4 rounded-xl border border-zinc-800">
                     <div className="text-cyan-400 font-bold mb-2">Shapes (Ones)</div>
-                    0=○, 1=△, 2=☆, 3=⟢, 4=✧<br/>
+                    0=◊, 1=△, 2=☆, 3=⟢, 4=✧<br/>
                     5=┌, 6=┐, 7=└, 8=┘, 9=⊹
                   </div>
                   <div className="bg-black/50 p-4 rounded-xl border border-zinc-800">
