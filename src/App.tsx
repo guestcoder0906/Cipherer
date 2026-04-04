@@ -7,17 +7,15 @@ import React, { useState } from 'react';
 import { Copy, Info, Check, PenTool, BookOpen } from 'lucide-react';
 
 // 10 Diverse Base Shapes (Values 0-9)
-const SHAPES = ['◊', '𖥔', '☆', '⟢', '✧', '┌', '┐', '└', '┘', '⊹'];
-const ZWJ = '\u200D';
-
+const SHAPES = ['◊', '𖥔', '✧', '⟢', '☆', '┌', '┐', '└', '┘', '⊹'];
 // Combining Marks (Values 0, 10, 20, 30, 40)
 // Each dot represents 10.
 const MARKS = [
   '', 
-  ZWJ + '\u0307', // 1 dot above (10)
-  ZWJ + '\u0308', // 2 dots above (20)
-  ZWJ + '\u0308' + ZWJ + '\u0323', // 2 above, 1 below (30)
-  ZWJ + '\u0308' + ZWJ + '\u0324'  // 2 above, 2 below (40)
+  '\u0307', // 1 dot above (10)
+  '\u0308', // 2 dots above (20)
+  '\u0308\u0323', // 2 above, 1 below (30)
+  '\u0308\u0324'  // 2 above, 2 below (40)
 ];
 
 // Simple mapping for paper math: Space=0, A=1, B=2 ... Z=26
@@ -36,13 +34,14 @@ export default function App() {
   };
 
   const parseSymbol = (seg: string) => {
-    const normalized = seg.normalize('NFD');
-    const shape = normalized[0];
-    const shapeIdx = SHAPES.indexOf(shape);
+    // Find which shape this segment starts with to handle multi-unit characters (surrogate pairs)
+    // We check the longest shapes first if there were any, but here they are all single graphemes.
+    const shapeIdx = SHAPES.findIndex(s => seg.startsWith(s));
     if (shapeIdx === -1) return -1;
 
     let dotCount = 0;
-    for (const char of normalized) {
+    // Count dots in the entire segment (grapheme)
+    for (const char of seg) {
       if (char === '\u0307') dotCount += 1;
       if (char === '\u0308') dotCount += 2;
       if (char === '\u0323') dotCount += 1;
@@ -126,7 +125,7 @@ export default function App() {
       <div className="max-w-6xl mx-auto space-y-12">
         <header className="text-center space-y-4 py-12">
           <div className="inline-flex items-center justify-center p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 mb-4 shadow-lg shadow-cyan-900/20">
-            <span className="text-3xl tracking-widest text-cyan-400 font-mono">△‍̇┐‍̈</span>
+            <span className="text-3xl tracking-widest text-cyan-400 font-mono">{SHAPES[1]}{MARKS[1]}{SHAPES[6]}{MARKS[2]}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-cyan-400">
             Astral Cipher
@@ -179,8 +178,10 @@ export default function App() {
               placeholder="Enter cipher to decrypt..."
               className="flex-1 min-h-[250px] w-full bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 text-cyan-400 placeholder:text-zinc-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 resize-none transition-all duration-300 shadow-inner text-4xl tracking-widest leading-relaxed"
               style={{ 
-                fontFamily: 'var(--font-mono)',
-                textShadow: ciphertext ? '0 0 20px rgba(34, 211, 238, 0.2)' : 'none'
+                fontFamily: '"JetBrains Mono", "Noto Sans Symbols", "Noto Sans Symbols 2", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+                textShadow: ciphertext ? '0 0 20px rgba(34, 211, 238, 0.2)' : 'none',
+                textRendering: 'geometricPrecision',
+                fontVariantLigatures: 'none'
               }}
             />
           </div>
@@ -209,7 +210,7 @@ export default function App() {
               <div className="grid grid-cols-5 gap-2">
                 {[0, 1, 2, 3, 4].map(i => (
                   <div key={i} className="flex flex-col items-center justify-center bg-zinc-950 p-3 rounded-xl border border-zinc-800 hover:border-amber-500/50 transition-colors">
-                    <span className="text-2xl text-cyan-400 font-mono">◊{MARKS[i]}</span>
+                    <span className="text-2xl text-cyan-400 font-mono">{SHAPES[0]}{MARKS[i]}</span>
                     <span className="text-xs text-zinc-500 mt-2 font-mono">+{i * 10}</span>
                   </div>
                 ))}
@@ -251,8 +252,8 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="bg-black/50 p-4 rounded-xl border border-zinc-800">
                     <div className="text-cyan-400 font-bold mb-2">Shapes (Ones)</div>
-                    0=◊, 1=𖥔, 2=☆, 3=⟢, 4=✧<br/>
-                    5=┌, 6=┐, 7=└, 8=┘, 9=⊹
+                    {SHAPES.slice(0, 5).map((s, i) => `${i}=${s}`).join(', ')}<br/>
+                    {SHAPES.slice(5, 10).map((s, i) => `${i+5}=${s}`).join(', ')}
                   </div>
                   <div className="bg-black/50 p-4 rounded-xl border border-zinc-800">
                     <div className="text-amber-400 font-bold mb-2">Dots (Tens)</div>
